@@ -38,16 +38,24 @@
     name: vagrant
     group: docker
 
-- name: Signing key for Kubernetes
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
+#- name: Signing key for Kubernetes
+#  apt_key:
+#    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+#    state: present
 
-- name: Repository for Kubernetes
-  apt_repository:
-    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-    state: present
-    filename: kubernetes.list
+#- name: Repository for Kubernetes
+#  apt_repository:
+#    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+#    state: present
+#    filename: kubernetes.list
+
+- name: Repository and Siging key for Kubernetes
+  shell: |
+    # Update: see https://kubernetes.io/blog/2023/08/15/pkgs-k8s-io-introduction/
+    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo mkdir -p -m 755 /etc/apt/keyrings
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg    
+    sudo apt-get update
 
 - name: Set sysctl
   sysctl:
@@ -84,7 +92,8 @@
 
 - name: Configure node ip
   lineinfile:
-    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    #path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    path: /lib/systemd/system/kubelet.service.d/10-kubeadm.conf
     line: "KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}"
 
 - name: Restart kubelet
@@ -101,4 +110,6 @@
 
 - name: Join the node to cluster
   command: sh /tmp/join-command.sh
+  ignore_errors: yes
+
 

@@ -39,16 +39,24 @@
     name: vagrant
     group: docker
 
-- name: Signing key for Kubernetes
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
+#- name: Signing key for Kubernetes
+#  apt_key:
+#    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+#    state: present
 
-- name: Repository for Kubernetes
-  apt_repository:
-    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-    state: present
-    filename: kubernetes.list
+#- name: Repository for Kubernetes
+#  apt_repository:
+#    repo: deb https://apt.kubernetes.io/ {{ code_name }} main
+#    state: present
+#    filename: kubernetes.list
+
+- name: Repository and Siging key for Kubernetes
+  shell: |
+    # Update: see https://kubernetes.io/blog/2023/08/15/pkgs-k8s-io-introduction/
+    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo mkdir -p -m 755 /etc/apt/keyrings
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    sudo apt-get update
 
 - name: Set sysctl
   sysctl:
@@ -85,7 +93,8 @@
 
 - name: Configure node ip
   lineinfile:
-    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    #path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    path: /lib/systemd/system/kubelet.service.d/10-kubeadm.conf
     line: "KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}"
 
 - name: Restart kubelet
@@ -94,8 +103,15 @@
     daemon_reload: yes
     state: restarted
 
+- name: Restart containerd
+  shell: |
+    # Fix 'container runtime is not running during kubeadm init' - see https://k21academy.com/docker-kubernetes/container-runtime-is-not-running/
+    sudo rm /etc/containerd/config.toml
+    sudo systemctl restart containerd
+
 - name: Initialize the Kubernetes cluster using kubeadm
   command: kubeadm init --apiserver-advertise-address=192.168.100.100 --node-name k8s-master --pod-network-cidr=10.244.0.0/16
+  ignore_errors: yes
 
 - name: Create .kube directory
   file:
@@ -119,13 +135,17 @@
  
 - name: Deploy flannel network
   become: false
-  shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+  #shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+  # see https://github.com/flannel-io/flannel
+  shell: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
   args:
     executable: /bin/bash
+  ignore_errors: yes
 
 - name: Disable scheduling on master node
   become: false
   shell: kubectl taint nodes k8s-master key=value:NoSchedule
+  ignore_errors: yes
 
 - name: Generate join command
   command: kubeadm token create --print-join-command

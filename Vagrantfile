@@ -60,18 +60,18 @@ Vagrant.configure("2") do |config|
         end
         # It is also possible to specify this playbook to run as part of
         # kubernetes-master-install.yaml, if you prefer it that way.
-        master.vm.provision "ansible_local" do |ansible|
-            ansible.playbook = "ansible/playbooks/lb/lb-deployment.yaml"
-            ansible.extra_vars = {
-                ansible_python_interpreter: "/usr/bin/python3"
-            }
-        end
-        master.vm.provision "ansible_local" do |ansible|
-            ansible.playbook = "ansible/playbooks/dashboard/kubernetes-dashboard-install.yaml"
-             ansible.extra_vars = {
-                ansible_python_interpreter: "/usr/bin/python3"
-            }
-        end
+        #master.vm.provision "ansible_local" do |ansible|
+        #    ansible.playbook = "ansible/playbooks/lb/lb-deployment.yaml"
+        #    ansible.extra_vars = {
+        #        ansible_python_interpreter: "/usr/bin/python3"
+        #    }
+        #end
+        #master.vm.provision "ansible_local" do |ansible|
+        #    ansible.playbook = "ansible/playbooks/dashboard/kubernetes-dashboard-install.yaml"
+        #     ansible.extra_vars = {
+        #        ansible_python_interpreter: "/usr/bin/python3"
+        #    }
+        #end
         master.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "ansible/playbooks/nfs/nfs-kubernetes-deploy.yaml"
         end
