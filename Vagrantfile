@@ -29,8 +29,7 @@ Vagrant.configure("2") do |config|
         # workaround as per https://github.com/hashicorp/vagrant/issues/11544
         config.vm.provision :shell, inline: "apt-get update -y && apt-get upgrade -y && apt-get install -qy ansible"
         nfs.vm.provision "ansible_local" do |ansible|
-            # ansible.playbook = "ansible/playbooks/nfs/nfs-server.yaml"
-            ansible.playbook = "nfs-server.yaml"
+            ansible.playbook = "ansible/playbooks/nfs/nfs-server.yaml"
             ansible.extra_vars = {
                 node_ip: "192.168.100.150",
                 ansible_python_interpreter: "/usr/bin/python3",
