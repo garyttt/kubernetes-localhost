@@ -102,6 +102,11 @@
     daemon_reload: yes
     state: restarted
 
+- name: Restart containerd
+  shell: |
+    sudo rm -f /etc/containerd/config.toml
+    sudo systemctl restart containerd
+
 - name: Copy the join command to server location
   copy:
     src: join-command

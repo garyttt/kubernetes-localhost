@@ -106,7 +106,7 @@
 - name: Restart containerd
   shell: |
     # Fix 'container runtime is not running during kubeadm init' - see https://k21academy.com/docker-kubernetes/container-runtime-is-not-running/
-    sudo rm /etc/containerd/config.toml
+    sudo rm -f /etc/containerd/config.toml
     sudo systemctl restart containerd
 
 - name: Initialize the Kubernetes cluster using kubeadm
@@ -133,22 +133,22 @@
     owner: vagrant
     group: vagrant
  
-- name: Deploy flannel network
-  become: false
-  #shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-  # see https://github.com/flannel-io/flannel
-  shell: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-  args:
-    executable: /bin/bash
-  ignore_errors: yes
+#- name: Deploy flannel network
+#  become: false
+#  #shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+#  # see https://github.com/flannel-io/flannel
+#  shell: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+#  args:
+#    executable: /bin/bash
+#  ignore_errors: yes
 
-- name: Disable scheduling on master node
-  become: false
-  shell: kubectl taint nodes k8s-master key=value:NoSchedule
-  ignore_errors: yes
+#- name: Disable scheduling on master node
+#  become: false
+#  shell: kubectl taint nodes k8s-master key=value:NoSchedule
+#  ignore_errors: yes
 
 - name: Generate join command
-  command: kubeadm token create --print-join-command
+  command: sudo kubeadm token create --print-join-command
   register: join_command
 
 - name: Copy join command to local file
