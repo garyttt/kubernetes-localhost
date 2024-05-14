@@ -1,6 +1,6 @@
 ENV["LC_ALL"] = "en_US.UTF-8"
-CODE_NAME = "jammy"
-IMAGE_NAME = "ubuntu/jammy64"
+CODE_NAME = "focal"
+IMAGE_NAME = "ubuntu/focal64"
 N = 2
 
 Vagrant.configure("2") do |config|
