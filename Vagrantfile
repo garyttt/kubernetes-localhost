@@ -28,6 +28,10 @@ Vagrant.configure("2") do |config|
           nfs.name = 'k8s-nfs-server'
           nfs.memory = "768"
           nfs.cpus = 1
+          # Fix for vagrant hangs at 'SSH auth method: Private key', see:
+          # https://stackoverflow.com/questions/38463579/vagrant-hangs-at-ssh-auth-method-private-key
+          nfs.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+          nfs.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
         end 
         # workaround as per https://github.com/hashicorp/vagrant/issues/11544
         config.vm.provision :shell, inline: "apt-get update -y && apt-get upgrade -y && apt-get install -qy ansible"
@@ -51,6 +55,10 @@ Vagrant.configure("2") do |config|
           master.name = 'k8s-master'
           master.memory = "2048"
           master.cpus = 2
+          # Fix for vagrant hangs at 'SSH auth method: Private key', see:
+          # https://stackoverflow.com/questions/38463579/vagrant-hangs-at-ssh-auth-method-private-key
+          master.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+          master.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
         end
         config.vm.provision :shell, inline: "apt-get update -y && apt-get upgrade -y && apt-get install -qy ansible"
         master.vm.provision "ansible_local" do |ansible|
@@ -91,6 +99,10 @@ Vagrant.configure("2") do |config|
               node.name = "k8s-node-#{node_id}"
               node.memory = "2048"
               node.cpus = 2
+              # Fix for vagrant hangs at 'SSH auth method: Private key', see:
+              # https://stackoverflow.com/questions/38463579/vagrant-hangs-at-ssh-auth-method-private-key
+              node.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+              node.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
             end
             config.vm.provision :shell, inline: "apt update -y && apt upgrade -y && apt install -qy ansible"
             node.vm.provision "ansible_local" do |ansible|
