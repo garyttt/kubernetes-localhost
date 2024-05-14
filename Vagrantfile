@@ -6,7 +6,10 @@ N = 2
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
     # config.vm.synced_folder ".", "/vagrant", create: true
-    
+
+    # Fix for 'Timed out while waiting for the machine to boot'
+    config.vm.boot_timeout = 600
+     
     # Fix for 'failed to open/create internal network' - reset the network adapter by disable/re-enable, see:
     # https://stackoverflow.com/questions/33725779/failed-to-open-create-the-internal-network-vagrant-on-windows10
 
