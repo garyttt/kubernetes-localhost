@@ -30,6 +30,7 @@ Vagrant.configure("2") do |config|
           nfs.cpus = 1
           # Fix for vagrant hangs at 'SSH auth method: Private key', see:
           # https://stackoverflow.com/questions/38463579/vagrant-hangs-at-ssh-auth-method-private-key
+          nfs.customize ["modifyvm", :id, "--cableconnected1", "on"]
           nfs.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
           nfs.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
         end 
@@ -57,6 +58,7 @@ Vagrant.configure("2") do |config|
           master.cpus = 2
           # Fix for vagrant hangs at 'SSH auth method: Private key', see:
           # https://stackoverflow.com/questions/38463579/vagrant-hangs-at-ssh-auth-method-private-key
+          master.customize ["modifyvm", :id, "--cableconnected1", "on"]
           master.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
           master.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
         end
@@ -101,6 +103,7 @@ Vagrant.configure("2") do |config|
               node.cpus = 2
               # Fix for vagrant hangs at 'SSH auth method: Private key', see:
               # https://stackoverflow.com/questions/38463579/vagrant-hangs-at-ssh-auth-method-private-key
+              node.customize ["modifyvm", :id, "--cableconnected1", "on"]
               node.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
               node.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
             end
