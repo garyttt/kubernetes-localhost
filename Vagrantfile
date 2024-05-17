@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
     # config.vm.synced_folder ".", "/vagrant", create: true
 
-    # Fix for 'Timed out while waiting for the machine to boot'
+    # Fix for 'Timed out while waiting for the machine to boot', also reset (disable/re-enable) Virtualbox network adapter(s) and then re-try 
     config.vm.boot_timeout = 600
      
     # Fix for 'failed to open/create internal network' - reset the network adapter by disable/re-enable, see:
