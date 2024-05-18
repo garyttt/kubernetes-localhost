@@ -1,6 +1,7 @@
 ENV["LC_ALL"] = "en_US.UTF-8"
 CODE_NAME = "focal"
 IMAGE_NAME = "ubuntu/focal64"
+IMAGE_VERN = "20240513.0.0"
 N = 2
 
 Vagrant.configure("2") do |config|
@@ -21,6 +22,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.define "k8s-nfs-server" do |nfs|
         nfs.vm.box = IMAGE_NAME
+        nfs.vm.box_version = IMAGE_VERN
         nfs.vm.box_check_update = "True"
         nfs.vm.network "private_network", ip: "192.168.100.150"
         nfs.vm.hostname = "k8s-nfs-server"
@@ -49,6 +51,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.define "k8s-master" do |master|
         master.vm.box = IMAGE_NAME
+        master.vm.box_version = IMAGE_VERN
         master.vm.box_check_update = "True"
         master.vm.network "private_network", ip: "192.168.100.100"
         master.vm.hostname = "k8s-master"
@@ -94,6 +97,7 @@ Vagrant.configure("2") do |config|
     (1..N).each do |node_id|
         config.vm.define "k8s-node-#{node_id}" do |node|
             node.vm.box = IMAGE_NAME
+            node.vm.box_version = IMAGE_VERN
             node.vm.box_check_update = "True"
             node.vm.network "private_network", ip: "192.168.100.10#{node_id}"
             node.vm.hostname = "k8s-node-#{node_id}"
