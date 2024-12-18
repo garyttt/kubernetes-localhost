@@ -1,7 +1,8 @@
 ENV["LC_ALL"] = "en_US.UTF-8"
 CODE_NAME = "focal"
 IMAGE_NAME = "ubuntu/focal64"
-IMAGE_VERN = "20240513.0.0"
+# https://portal.cloud.hashicorp.com/vagrant/discover/ubuntu/focal64
+IMAGE_VERN = "20240821.0.1"
 N = 2
 
 Vagrant.configure("2") do |config|
