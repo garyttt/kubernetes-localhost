@@ -1,13 +1,11 @@
 # kubernetes-localhost
 [![asciicast](https://asciinema.org/a/352272.svg)](https://asciinema.org/a/352272?autoplay=1&speed=5)
-Deploys Kubernetes with loadbalancer, dashboard & persistent storage
-on local machine using Vagrant.
+Deploys Kubernetes with loadbalancer, dashboard & persistent storage on local machine using Vagrant.
 
-By default you get 1 master, 2 working nodes, NFS server, loadbalancer,
-and deployed dashboard.
+By default you get 1 master, 2 working nodes, NFS server, loadbalancer, and deployed dashboard.
 
-Version of deployed Kubernetes cluster is 1.18, version of Ubuntu VirtualBox
-image is 18.04.
+Version of deployed Kubernetes cluster is 1.32, version of Ubuntu VirtualBox image is 20.04.
+Version of vagrant is 2.4.3, version of Oracle VirtualBox is 7.1.4
 
 Persistent volume `pv-nfs` and 5GB persistent volume claim `pvc-nfs` are provided automatically.
 For examples on how to use/create your own pv/pvc, check `storage` directory.
